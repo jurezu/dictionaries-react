@@ -11,7 +11,6 @@ class Dictionaries extends Component {
     this.loadLocalStorage();
   }
   componentDidUpdate() {
-    console.log("Storing to local storage.");
     this.storeLocalStorage();
   }
 
