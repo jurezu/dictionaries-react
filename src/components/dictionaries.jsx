@@ -182,21 +182,15 @@ class Dictionaries extends Component {
 
     return (
       <div>
-        {this.state.dictionaries.map(d => (
-          <Jumbotron key={d._id}>
-            <div>
-              <h4>{d.title}</h4>
-              <Button
-                onClick={() => this.handleDeleteDictionary(d)}
-                variant="outline-danger btn-sm float-right "
-              >
-                Delete
-              </Button>
-            </div>
+        {this.state.dictionaries.map(dictionary => (
+          <Jumbotron key={dictionary._id}>
             <Dictionary
-              dictionary={d}
+              onDeleteDictionary={dictionary =>
+                this.handleDeleteDictionary(dictionary)
+              }
+              dictionary={dictionary}
               onUpdateEntry={this.handleUpdateEntry}
-              onDeleteEntry={entry => this.handleDeleteEntry(d, entry)}
+              onDeleteEntry={entry => this.handleDeleteEntry(dictionary, entry)}
               onCreateEntry={this.handleCreateEntry}
             />
           </Jumbotron>

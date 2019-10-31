@@ -4,7 +4,7 @@ import UpdateEntryModal from "./modals/updateEntry";
 import "../dictionary.css";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
-
+import DictionaryTable from "./dictionaryTable";
 class Dictionary extends Component {
   renderValidation = entry => {
     if (entry.errors === undefined) {
@@ -31,12 +31,22 @@ class Dictionary extends Component {
     const {
       onDeleteEntry,
       onUpdateEntry,
-      dictionary: { entries } = []
+      dictionary,
+      onDeleteDictionary
     } = this.props;
 
     return (
       <React.Fragment>
-        {entries ? (
+        <div>
+          <h4>{dictionary.title}</h4>
+          <Button
+            onClick={() => onDeleteDictionary(dictionary)}
+            variant="outline-danger btn-sm float-right "
+          >
+            Delete
+          </Button>
+        </div>
+        {dictionary.entries ? (
           <Table bordered hover>
             <thead>
               <tr>
@@ -47,7 +57,7 @@ class Dictionary extends Component {
               </tr>
             </thead>
             <tbody>
-              {entries.map(entry => (
+              {dictionary.entries.map(entry => (
                 <tr key={entry._id}>
                   <td>{entry.domain}</td>
                   <td>{entry.range}</td>
