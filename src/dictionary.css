@@ -1,0 +1,26 @@
+.duplicate,
+.fork {
+  background-color: rgb(185, 185, 25);
+}
+.cycle,
+.chain {
+  background-color: rgb(170, 11, 6);
+}
+
+.valid {
+  background-color: rgb(83, 180, 88);
+}
+.valid,
+.cycle,
+.chain,
+.duplicate,
+.fork {
+  float: left;
+  padding: 4px 8px;
+  margin-right: 5px;
+  border-radius: 5px;
+  color: white;
+}
+h4 {
+  float: left;
+}
