@@ -1,7 +1,7 @@
-## App is availabe on 
+##  :white_check_mark: App is availabe on 
 https://jure-zuljevic-dictionaries.herokuapp.com/
 
-## User manual
+## :book: User manual
 To quickly test functionalities of the app, click "Load Mock Data" button in the top right corner. 
 This will load the necessary data to see functionalities of the validation function.
 App is using local storage so all the changes will be preserved.
