@@ -32,3 +32,9 @@ h4 {
   flex-direction: row;
   justify-content: space-between;
 }
+.dictionaryHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 16px;
+}

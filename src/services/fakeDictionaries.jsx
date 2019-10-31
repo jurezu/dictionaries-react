@@ -18,8 +18,7 @@ export function getDictionaries() {
         {
           _id: "5b21ca3eeb7f6fbccd471813",
           domain: "Mystic Silver",
-          range: "Silver",
-          errors: { duplicate: true, cycle: true, fork: true, chain: true }
+          range: "Silver"
         }
       ]
     },

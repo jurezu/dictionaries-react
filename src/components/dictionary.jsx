@@ -31,7 +31,7 @@ class Dictionary extends Component {
 
     return (
       <Jumbotron>
-        <div>
+        <div className="dictionaryHeader">
           <h4>{dictionary.title}</h4>
           <Button
             onClick={this.deleteDictionary}
