@@ -175,30 +175,6 @@ class Dictionaries extends Component {
     }
   };
 
-  renderDictionaries = () => {
-    if (!this.state.dictionaries.length) {
-      return <h2 className="jumbotron">There are no dictionaries.</h2>;
-    }
-
-    return (
-      <div>
-        {this.state.dictionaries.map(dictionary => (
-          <Jumbotron key={dictionary._id}>
-            <Dictionary
-              onDeleteDictionary={dictionary =>
-                this.handleDeleteDictionary(dictionary)
-              }
-              dictionary={dictionary}
-              onUpdateEntry={this.handleUpdateEntry}
-              onDeleteEntry={entry => this.handleDeleteEntry(dictionary, entry)}
-              onCreateEntry={this.handleCreateEntry}
-            />
-          </Jumbotron>
-        ))}
-      </div>
-    );
-  };
-
   render() {
     return (
       <div>
@@ -213,7 +189,27 @@ class Dictionaries extends Component {
         >
           Load Mock Data
         </Button>
-        {this.renderDictionaries()} //u posebnu komp
+        {this.state.dictionaries.length ? (
+          <div>
+            {this.state.dictionaries.map(dictionary => (
+              <Jumbotron key={dictionary._id}>
+                <Dictionary
+                  onDeleteDictionary={dictionary =>
+                    this.handleDeleteDictionary(dictionary)
+                  }
+                  dictionary={dictionary}
+                  onUpdateEntry={this.handleUpdateEntry}
+                  onDeleteEntry={entry =>
+                    this.handleDeleteEntry(dictionary, entry)
+                  }
+                  onCreateEntry={this.handleCreateEntry}
+                />
+              </Jumbotron>
+            ))}
+          </div>
+        ) : (
+          <h2 className="jumbotron">There are no dictionaries.</h2>
+        )}
       </div>
     );
   }
