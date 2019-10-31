@@ -24,3 +24,11 @@
 h4 {
   float: left;
 }
+.jumbotron {
+  padding: 32px;
+}
+.headerActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

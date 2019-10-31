@@ -3,14 +3,22 @@ import { getDictionaries } from "../services/fakeDictionaries";
 import Dictionary from "./dictionary";
 import NewDictModal from "./modals/newDictModal";
 import Button from "react-bootstrap/Button";
-import Jumbotron from "react-bootstrap/Jumbotron";
 
 class Dictionaries extends Component {
   state = { dictionaries: [] };
 
+  componentDidMount() {
+    this.loadLocalStorage();
+  }
+  componentDidUpdate() {
+    console.log("Storing to local storage.");
+    this.storeLocalStorage();
+  }
+
   handleLoadMockData = () => {
     this.setState({ dictionaries: getDictionaries() });
   };
+
   loadLocalStorage = () => {
     const dictionaries =
       JSON.parse(localStorage.getItem("DictionariesInStorage")) || {};
@@ -23,74 +31,72 @@ class Dictionaries extends Component {
       JSON.stringify(this.state.dictionaries)
     );
   };
-  componentDidMount() {
-    this.loadLocalStorage();
-  }
-  componentDidUpdate() {
-    console.log("Storing to local storage.");
-    this.storeLocalStorage();
-  }
 
   /* Dictionaries CRUD */
   handleCreateDictionary = dict => {
-    const dictionaries = [dict, ...this.state.dictionaries];
-    this.setState({ dictionaries });
+    this.setState(state => ({
+      dictionaries: [dict, ...state.dictionaries]
+    }));
   };
 
   handleDeleteDictionary = dictionary => {
-    //console.log("Deleting dictionary " + dictionary.title);
-    const dictionaries = this.state.dictionaries.filter(
-      d => d._id !== dictionary._id
-    );
-    this.setState({ dictionaries });
+    this.setState(state => ({
+      dictionaries: state.dictionaries.filter(d => d._id !== dictionary._id)
+    }));
   };
 
   /* Entries CRUD */
   handleDeleteEntry = (dictionary, entry) => {
-    //console.log("Deleting " + entry.domain);
-    const dictionaries = [...this.state.dictionaries]; //copy all
-    const index = dictionaries.indexOf(dictionary); //get index
-    const entries = dictionaries[index].entries.filter(
-      e => e._id !== entry._id
-    ); //take all but targeted
-    //TODO update errors in dict
-    dictionaries[index].entries = entries; //save to dictionary
-    this.setState({ dictionaries }, () =>
-      this.validateDictionary(dictionary, true)
-    ); //save changes
+    this.setState(
+      state => {
+        const dictionaries = [...state.dictionaries];
+        const index = dictionaries.indexOf(dictionary);
+        const entries = dictionaries[index].entries.filter(
+          e => e._id !== entry._id
+        ); //take all but targeted
+        dictionaries[index].entries = entries;
+        return { dictionaries };
+      },
+      () => this.validateDictionary(dictionary, true)
+    );
   };
+
   handleUpdateEntry = (dictionary, entry) => {
-    //console.log("Update entry" + entry);
-    const dictionaries = [...this.state.dictionaries]; //copy all
-    const index = dictionaries.indexOf(dictionary); //get index
-    let entries = [...dictionaries[index].entries]; //get entries
-    //TODO update errors in dict
-    const indexOfEntry = entries.findIndex(e => e._id === entry._id); //get the position of old entry
-    entries[indexOfEntry] = entry; //add updated entry in position
-    dictionaries[index].entries = entries; //save to dictionary
-    this.setState({ dictionaries }, () =>
-      this.validateDictionary(dictionary, true)
-    ); //save changes
+    this.setState(
+      state => {
+        const dictionaries = [...state.dictionaries];
+        const index = dictionaries.indexOf(dictionary);
+        let entries = [...dictionaries[index].entries];
+        const indexOfEntry = entries.findIndex(e => e._id === entry._id);
+        entries[indexOfEntry] = entry; //add updated entry in position
+        dictionaries[index].entries = entries;
+        return { dictionaries };
+      },
+      () => this.validateDictionary(dictionary, true)
+    );
   };
   handleCreateEntry = (dictionary, entry) => {
-    //console.log("Create new entry: " + entry);
-    const dictionaries = [...this.state.dictionaries]; //copy all
-    const index = dictionaries.indexOf(dictionary); //get index
-    const entries = [...dictionaries[index].entries, entry]; //take all but targeted
-    //TODO update errors in dict
-    dictionaries[index].entries = entries; //save to dictionary
-    this.setState({ dictionaries }, () =>
-      this.validateDictionary(dictionary, false)
-    ); //save changes
+    this.setState(
+      state => {
+        const dictionaries = [...state.dictionaries];
+        const index = dictionaries.indexOf(dictionary);
+        const entries = [...dictionaries[index].entries, entry];
+        dictionaries[index].entries = entries;
+        return { dictionaries };
+      },
+      () => this.validateDictionary(dictionary, false)
+    );
   };
   handleUpdateEntryErrors = (dictionary, entry) => {
-    const dictionaries = [...this.state.dictionaries]; //copy all
-    const index = dictionaries.indexOf(dictionary); //get index
-    let entries = [...dictionaries[index].entries]; //get entries
-    const indexOfEntry = entries.findIndex(e => e._id === entry._id); //get the position of old entry
-    entries[indexOfEntry] = entry; //add updated entry in position
-    dictionaries[index].entries = entries; //save to dictionary
-    this.setState({ dictionaries }); //save changes
+    this.setState(state => {
+      const dictionaries = [...this.state.dictionaries];
+      const index = dictionaries.indexOf(dictionary);
+      let entries = [...dictionaries[index].entries];
+      const indexOfEntry = entries.findIndex(e => e._id === entry._id);
+      entries[indexOfEntry] = entry;
+      dictionaries[index].entries = entries;
+      return { dictionaries };
+    });
   };
   checkInconsistencies = (entry1, entry2) => {
     let errors = {
@@ -102,17 +108,14 @@ class Dictionaries extends Component {
     //duplicates
     if (entry1.domain === entry2.domain && entry1.range === entry2.range) {
       errors.duplicate = true;
-      //console.log("got duplicate");
     }
     //fork
     if (entry1.domain === entry2.domain && entry1.range !== entry2.range) {
       errors.fork = true;
-      //console.log("got fork");
     }
     //cycle
     if (entry1.domain === entry2.range && entry1.range === entry2.domain) {
       errors.cycle = true;
-      //console.log("got cycle");
     }
     //chain
     //watchout for e1 and e2 interchangeability
@@ -122,22 +125,20 @@ class Dictionaries extends Component {
       entry1.range !== entry2.range
     ) {
       errors.chain = true;
-      //console.log("got chain");
     }
     return errors;
   };
 
-  logicalOrObjectsByKey = (...objs) => {
-    return objs.reduce((a, b) => {
-      for (let k in b) {
-        if (b.hasOwnProperty(k)) a[k] = a[k] || false || b[k]; //if there is no error attribute TODO
+  logicalOrObjectsByKey = (...errorObjs) => {
+    return errorObjs.reduce((acc, error) => {
+      for (let k in error) {
+        if (error.hasOwnProperty(k)) acc[k] = acc[k] || false || error[k]; //if there is no error attribute
       }
-      return a;
+      return acc;
     }, {});
   };
+
   validateDictionary = (dictionary, startFromScratch) => {
-    //console.log("validating dict" + dictionary);
-    //console.log("Start from scratch: " + startFromScratch);
     let cumulatedErrors, newErrors;
     let updatedEntry;
     const errors = {
@@ -167,44 +168,35 @@ class Dictionaries extends Component {
       }
       updatedEntry = { ...entry1 };
       updatedEntry.errors = cumulatedErrors;
-      //if (cumulatedErrors !== undefined) {
-      //console.log(cumulatedErrors);
-      //}
 
       this.handleUpdateEntryErrors(dictionary, updatedEntry);
     }
   };
 
   render() {
+    const { dictionaries } = this.state;
     return (
       <div>
-        <NewDictModal
-          onNewDict={dict => {
-            this.handleCreateDictionary(dict); //todo slozi u funkciju gore i pozovi this...
-          }}
-        />
-        <Button
-          onClick={this.handleLoadMockData}
-          variant="outline-secondary m-2"
-        >
-          Load Mock Data
-        </Button>
-        {this.state.dictionaries.length ? (
+        <div className="headerActions">
+          <NewDictModal onNewDict={this.handleCreateDictionary} />
+          <Button
+            onClick={this.handleLoadMockData}
+            variant="outline-secondary m-2"
+          >
+            Load Mock Data
+          </Button>
+        </div>
+        {dictionaries.length ? (
           <div>
-            {this.state.dictionaries.map(dictionary => (
-              <Jumbotron key={dictionary._id}>
-                <Dictionary
-                  onDeleteDictionary={dictionary =>
-                    this.handleDeleteDictionary(dictionary)
-                  }
-                  dictionary={dictionary}
-                  onUpdateEntry={this.handleUpdateEntry}
-                  onDeleteEntry={entry =>
-                    this.handleDeleteEntry(dictionary, entry)
-                  }
-                  onCreateEntry={this.handleCreateEntry}
-                />
-              </Jumbotron>
+            {dictionaries.map(dictionary => (
+              <Dictionary
+                key={dictionary._id}
+                dictionary={dictionary}
+                onDeleteDictionary={this.handleDeleteDictionary}
+                onUpdateEntry={this.handleUpdateEntry}
+                onDeleteEntry={this.handleDeleteEntry}
+                onCreateEntry={this.handleCreateEntry}
+              />
             ))}
           </div>
         ) : (
