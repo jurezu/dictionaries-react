@@ -42,7 +42,10 @@ class DictionaryEntry extends Component {
         <td>{entry.range}</td>
         <td>{this.renderValidation(entry)}</td>
         <td>
-          <Button onClick={this.deleteEntry} variant="outline-danger btn-sm">
+          <Button
+            onClick={this.deleteEntry}
+            variant="outline-danger btn-sm m-2"
+          >
             Delete
           </Button>
           <UpdateEntryModal onUpdateEntry={this.updateEntry} entry={entry} />

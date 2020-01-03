@@ -54,7 +54,7 @@ export function getDictionaries() {
     },
     {
       _id: "5b21ca3eeb7f6fbccd471817",
-      title: "Cycle chain example",
+      title: "Cycle, chain example",
       entries: [
         {
           _id: "5b21ca3eeb7f6fbccd471838",
@@ -72,7 +72,7 @@ export function getDictionaries() {
     },
     {
       _id: "5b21ca3eeb7f6fbgcd471817",
-      title: "Duplicte chain example",
+      title: "Duplicte, chain example",
       entries: [
         {
           _id: "5b21ca3eeb7f6fbccd471838",

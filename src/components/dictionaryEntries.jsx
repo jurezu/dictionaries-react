@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Table from "react-bootstrap/Table";
-import DictionaryEntry from "./dictionartEntry";
+import DictionaryEntry from "./dictionaryEntry";
 
 class DictionaryEntries extends Component {
   state = {};
@@ -8,7 +8,7 @@ class DictionaryEntries extends Component {
   render() {
     const { onUpdateEntry, onDeleteEntry, entries } = this.props;
     return (
-      <Table bordered hover>
+      <Table hover borderless>
         <thead>
           <tr>
             <th>Domain</th>
